@@ -216,26 +216,122 @@ Langkah-langkah nya adalah sebagai berikut:
 
 ### Langkah 4 - Memperbaiki Kode
 
-###### ----------------------------------
+Pada langkah ini kita akan mencoba untuk memperbaiki kode yang sudah dibuat sebelumnya agar bisa menjalankan `Serverless Function` yang digunakan dalam Vercel ini dengan baik.
 
-Pada langkah ini kita akan melakukan konfigurasi kode yang dimiliki sehingga bisa dijalankan pada `Vercel`.
+Untuk itu kita harus mengetahui terlebih dahulu bagaimana sebuah `Serverless Function` bekerja di dalam Vercel.
 
-Sebenarnya kita bisa saja mengikuti dokumentasi yang ada:
+Dokumentasi:
 
-- Memindahkan folder untuk `functions` ke `/api`
-- Membuat FrontEnd nya
-- Jalankan kodenya.
+- https://vercel.com/docs/concepts/functions/serverless-functions/quickstart
 
-Namun, pada aplikasi yang kita buat ini, bukan dalam bentuk FrontEnd first, melainkan BackEnd only.
+Di dalam Vercel `Serverless Function` didefinisikan sebagai berikut:
 
-Oleh karena itu, konfigurasi yang akan dilakukan pada pembelajaran ini, tidak terlalu mengikuti dokumentasi yang ada pada `Vercel`, melainkan berdasarkan baca dan mencoba dari API Reference yang ada pada `Vercel`.
+1. Di dalam sebuah folder yang bernama `api` (`/api`),
+1. Kemudian akan membaca sebuah file yang berisi function, mis: `handler.js` (`/api/handler.js`)
+1. kemudian ketika aplikasi dijalankan (`vercel dev`) ataupun di-deploy, akan dibaca di dalam `http://nama.domain/api/nama-file-function` (`http://localhost:3000/api/handler`)
 
-Jadi, apabila berbeda dari dokumentasi yang ada, harap dimaklumi yah.
+Di sini umumnya sifat dari Serverless Function itu adalah:
 
-Langkah-langkahnya adalah sebagai berikut:
+- Kecil
+- Biasanya fungsi lebih dari satu
+- Untuk keperluan yang spesifik per fungsinya
 
-1. Membuat sebuah file baru untuk konfigurasi vercel dengan nama `vercel.json`
-1. Memodifikasi file `vercel.json` menjadi sebagai berikut:
+Karena itu, pada saat kita ingin menggunakan `Serverless Function` untuk menjalankan `Express` ini, sebenarnya cukup `anti pattern` dari sifat umumnya.
+
+Namun... apalah daya, karena ini cara yang sangat baik untuk belajar `Serverless Function`, bukan?
+
+(Dan satu lagi, karena bisa gratis untuk skala yang cukup besar 😈).
+
+Tapi selain itu, ada juga caveat ketika kita mendeploy full aplikasi Express kita di dalam Serverless Function, untuk penjelasannya bisa dibaca di dokumentasi di bawah ini:
+
+- https://vercel.com/guides/using-express-with-vercel#drawbacks-and-edge-cases
+
+Oke sudah cukup tentang pengertiannya, mari kita coba untuk memperbaiki kodenya.
+
+**Disclaimer**
+
+- Cara ini digunakan setelah membaca API Reference yang ada, sehingga berbeda dengan dokumentasi yang diberikan di atas yah.
+
+Langkah langkahnya adalah sebagai berikut:
+
+1. Memindahkan kode kita yang semula ada pada `/src/sources/a-start` menjadi `/src/sources/a-start/api` KECUALI folder `.vercel` yang dibuat oleh Vercel
+
+   Kira kira struktur foldernya menjadi seperti berikut:
+
+   ```
+   # Folder /sources/a-start
+
+   .git
+   .gitignore
+   .vercel
+   api/
+      app.js
+      node_modules/
+         ...
+      package.json
+      pnpm-lock.yaml (bila menggunakan pnpm)
+      yarn.lock (bila menggunakan yarn)
+      package-lock.json (bila menggunakan npm)
+      services/
+         jsonplaceholder.js
+   ```
+
+1. Mengganti nama file `app.js` (`/sources/a-start/api/app.js`) menjadi `index.js` (`/sources/a-start/api/index.js`)
+
+1. Memodifikasi kode `index.js` menjadi sebagai berikut:
+
+   ```js
+   import cors from "cors";
+   import express from "express";
+
+   import { fetchTodos } from "./services/jsonplaceholder.js";
+
+   const app = express();
+   // TODO: Serverless Function - Modifikasi Kode (1)
+   // port sudah tidak digunakan lagi di dalam aplikasi
+   // jadi boleh di comment saja
+   // const port = process.env.PORT || 3000;
+
+   app.use(cors());
+   app.use(express.urlencoded({ extended: false }));
+   app.use(express.json());
+
+   app.get("/", (req, res) => {
+     res.status(200).json({
+       statusCode: 200,
+       message: "echo OK",
+       environmentSecret: process.env.SECRET ?? "Secret not Provided",
+     });
+   });
+
+   app.get("/api", async (req, res) => {
+     const data = await fetchTodos();
+
+     res.status(200).json({
+       statusCode: 200,
+       data,
+     });
+   });
+
+   // TODO: Serverless Function - Modifikasi Kode (2)
+   // Pada aplikasi berbasis Serverless Function
+   // Umumnya kita hanya akan mengexport Function saja
+   // (Jadi di dalam kodenya, tidak ada runner / main function yang dijalankan sama sekali)
+   // Sama dengan aplikasi express ini, jadinya tidak boleh ada listen
+   // Di comment saja listennya
+   // app.listen(port, (_) => console.log(`apps is listen @ port ${port}`));
+
+   // TODO: Serverless Function - Modifikasi Kode (3)
+   // Sebagai gantinya, di sini kita harus export Function kita
+   // Karena di sini di-treat sebagai module (package.json -> type: "module")
+   // Maka di sini menggunakan export default
+
+   // Apabila di treat sebagai non-module (CJS),
+   // Maka gunakan "module.exports = app;"
+   export default app;
+   ```
+
+1. Menambahkan file `vercel.json` (`/sources/a-start/vercel.json`), kemudian menambahkan kode berikut:
 
    ```json
    {
@@ -247,7 +343,3 @@ Langkah-langkahnya adalah sebagai berikut:
      ]
    }
    ```
-
-   Masih belum mengerti yah apa maksud dari json di atas? mari kita coba untuk bedah kodenya
-
-###### ----------------------------------
