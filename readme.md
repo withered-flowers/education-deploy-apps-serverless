@@ -127,7 +127,9 @@ Langkahnya adalah sebagai berikut:
    ![assets/00.png](assets/00.png)
 1. Tanpa perlu ada yang dikonfigurasikan, maka kita akan langsung menekan tombol `Deploy`
    ![assets/01.png](assets/01.png)
-1. Kemudian tunggu sebentar dan hasilnya adalah, **YES !** Aplikasi Express kita sudah terdeploy !
+1. Kemudian tunggu sebentar dan hasilnya adalah, **YES !** Aplikasi Express kita sudah terdeploy ! Bahkan sudah mendapatkan domain secara gratis !
+
+   (Harap domainnya di-ingat yah, karena nanti akan kita gunakan lagi)
 
    Tapi tunggu sebentar...
 
@@ -343,3 +345,35 @@ Langkah langkahnya adalah sebagai berikut:
      ]
    }
    ```
+
+   Maksud dari konfigurasi ini adalah kita akan meminta pada Vercel untuk membaca seluruh routing dari endpoint yang nantinya diberikan (http://localhost:3000/(seluruhnya)) untuk membaca dari folder `/api`
+
+1. Coba jalankan perintah `vercel dev` ulang, dari lihatlah hasilnya:
+
+   - http://localhost:3000/ ataupun
+   - http://localhost:3000/api
+
+   Seharusnya sampai pada tahap ini kode yang dituliskan sudah bisa berjalan dengan baik.
+
+Sampai di langkah ini, seharusnya pada tahap development yang kita lakukan, hal ini sudah berjalan dengan baik.
+
+Maka selanjutnya kita akan melakukan hal yang lainnya lagi, re-deploy aplikasi
+
+### Langkah 5 - Redeploy Aplikasi
+
+Pada langkah ini kita akan melakukan re-deploy aplikasi yang sudah dimodifikasi tadi, ke dalam Vercel.
+
+Kira kira bagaimana caranya yah? 🤔
+
+Langkahnya adalah sebagai berikut:
+
+1. Pindah ke folder yang berisi kode kita (`/sources/a-start`)
+1. Lakukan `git add`, `git commit` dan `git push`
+1. Tunggu 15 detik...
+1. Buka kembali web dengan domain yang sudah diberikan oleh Vercel, dan _voila_ kode sudah diupdate di GitHub, dan secara otomatis **LANGSUNG DI-RE-DEPLOY** oleh Vercel. Mantap bukan?
+
+   (Uhuk, ini backend loh padahal, uhuk)
+
+Sampai dengan langkah ini, aplikasi yang dibuat sudah dideploy dengan baik, hanya saja masih ada sedikit error yah, yaitu pada endpoint `/`, sebenarnya dibutuhkan suatu `environment variable` atau `env` dengan nama `SECRET` yang belum di-set yah.
+
+Nah selanjutnya kita akan mencoba untuk meng-set `env` nya dengan menggunakan ala Vercel ini.
