@@ -9,13 +9,15 @@
 ## Persyaratan Dasar
 
 - Mengerti perintah dasar pada Linux
-- Memiliki akun Vercel
 - Sudah menginstall nodejs dan memiliki akun Github
+- Memiliki akun Vercel yang sudah ter-link dengan akun Github
 - Mengerti penggunaan command line `git`
 
 ## Disclaimer
 
 Pada pembelajaran ini sudah disediakan sebuah kode sederhana yang sudah disiapkan untuk di-deploy. Kode ini dibuat dalam `nodejs`.
+
+Apabila belum membuat akun `Vercel`, sangat disarankan untuk `Login with Github` dalam pembelajaran ini agar cepat terkoneksi dengan `Vercel`.
 
 ## Perkenalan
 
@@ -107,50 +109,145 @@ Pada demo ini kita akan mengubah kode-nya sedikit agar bisa dideploy dengan cara
 
 1. Sampai pada titik ini, seharusnya pada repo `nama-repo-sendiri` yang ada di akun Github, sudah ada code yang berisi app.js dan lain lainnya ini. Selamat, Anda baru saja melakukan push code ke Github !
 
-### Langkah 2 - Install Vercel CLI
+Langkah selanjutnya adalah, kita akan mengikat (binding) repository yang kita miliki (di GitHub) ke Project yang akan di auto-deploy (di Vercel)
+
+### Langkah 2 - Link Repository GitHub to Vercel
+
+DISCLAIMER:
+
+- Untuk mengikat repo ke project, kita akan membutuhkan browser yah !
+
+Pada langkah ini, kita akan mengikat repo di GitHub dengan sebuah Project yang ada di Vercel.
+
+Langkahnya adalah sebagai berikut:
+
+1. Buka web Vercel (`https://vercel.com`) dan login
+1. Pada halaman Dashboard yang ditampilkan, Pada sebelah kanan, pilih `Add New...` -> `Project` dan kita akan diminta untuk meng-import repository Git.
+1. Pilih repository yang baru saja dibuat di atas, kemudian tekan tombol `Import` dan kita akan dipindahkan ke halaman `Dashboard` untuk melakukan konfigurasi.
+   ![assets/00.png](assets/00.png)
+1. Tanpa perlu ada yang dikonfigurasikan, maka kita akan langsung menekan tombol `Deploy`
+   ![assets/01.png](assets/01.png)
+1. Kemudian tunggu sebentar dan hasilnya adalah, **YES !** Aplikasi Express kita sudah terdeploy !
+
+   Tapi tunggu sebentar...
+
+   Ternyata kode yang kita tuliskan ada yang error sehingga tidak bisa berjalan dengan baik nih... 😭
+
+   Maka langkah selanjutnya adalah kita akan mencoba untuk melakukan _troubleshooting_, dengan menjalankan kode yang sudah dibuat ini, di komputer local yang kita miliki.
+
+   Oleh karena itu sekarang kita akan menggunakan `Vercel CLI`.
+
+### Langkah 3 - Inisialisasi Project Vercel di Komputer Lokal
 
 Karena kita menggunakan `Vercel`, maka sekarang kita harus membaca terlebih dahulu, bagaimana cara menggunakan dan mengembangkan aplikasi dengan `Vercel` terlebih dahulu.
 
 Pada dokumentasi Vercel, ternyata disebutkan untuk bisa mengembangkan `Serverless Function`, maka kita bisa melakukannya secara local (pada komputer kita sendiri) dengan menggunakan `Vercel CLI`.
 
-Sehingga pada langkah ini kita akan meng-install `Vercel CLI` dengan cara menggunakan perintah berikut:
+Langkah-langkah nya adalah sebagai berikut:
 
-    - [npm] `npm i -g vercel@latest`
-    - [yarn] `yarn global add vercel@latest`
-    - [pnpm] `pnpm i -g vercel@latest`
+1. Install `Vercel CLI` dengan cara menggunakan perintah berikut:
 
-(Sesuaikan dengan package manager pada nodejs yang digunakan yah !)
+   - [npm] `npm i -g vercel@latest`
+   - [yarn] `yarn global add vercel@latest`
+   - [pnpm] `pnpm i -g vercel@latest`
 
-### Langkah 3 - Link Project to Vercel
+   (Sesuaikan dengan package manager pada nodejs yang digunakan yah !)
 
-`Log in to Vercel` -> `Continue with GitHub`
+1. Login pada vercel-cli dengan menggunakan perintah:
 
-`Buka Browser` -> `Login with GitHub` -> `Authorize` -> `CLI Login Success`
-`Success! GitHub authentication complete for xxx@xxx.com`
+   ```bash
+   # Login
+   vercel login
 
-`Set up and develop "nama-folder-sekarang/a-start?"` -> `y`
+   # Login
+   #>Log in to vercel github
 
-`Which scope shoud contain your project?` -> `Pilih nama sendiri`
+   # Browser akan terbuka dan silahkan login github
+   #>Success! GitHub authentication complete for xxxxxxx@yyyyyyy.zzz
+   #>Congratulations! You are now logged in. In order to deploy something, run `vercel`.
+   #>Connect your Git Repositories to deploy every branch push automatically (https://vercel.link/git)
+   ```
 
-`Link to existing project?` -> `N`
+1. Selanjutnya kita akan melakukan linking project yang ada di komputer kita dengan project yang ada di Vercel yang barusan kita buat. Hal ini bisa dilakukan dengan perintah:
 
-`What's your project's name?` -> `nama-repo-sendiri`
+   ```bash
+   # Buka kembali project apps nya kita
 
-`In which directory is your code located` ? `(arahkan/ke/a-start)`
+   # Link project
+   vercel link
 
-`No framework detected. Default project settings`
-`? Want to modify these settings?` -> `N`
+   #?Set up "/nama/project/apps/kita/sources/a-start"?
+   #>Yes
 
-Dan selanjutnya kita akan terkena error:
+   #?Which scope should contain your project?
+   #>Nama Organization Pada Vercel
 
-```
-🔗  Linked to nama-repo-sendiri (created .vercel and added it to .gitignore)
-Error: Your `package.json` file is missing a `build` property inside the `scripts` property.
-Learn More: https://vercel.link/missing-build-script
-```
+   #?Link to existing project?
+   #>Yes
 
-Hal ini terjadi karena kita belum menggunakan konfigurasi yang diperlukan sama sekali untuk mendevelop serverless function pada Vercel.
+   #?What's the name of your existing project?
+   #>Nama Project Yang Ada di Vercel
+   #>(Pada contoh ini berdasarkan foto di atas, adalah `apps-deploy-serverless`)
 
-Selanjutnya kita akan melakukan konfigurasi kode agar kode kita dapat berjalan di GitHub.
+   #>Linked to xxxxx/apps-deploy-serverless (created .vercel)
+   ```
 
-### Langkah 4 - Konfigurasi Kode
+1. Buka file .gitignore yang ada, kemudian tambahkan `.vercel`
+
+1. Sampai di titik ini, artinya kita sudah siap untuk menjalankan aplikasi kita. Selanjutnya kita akan coba untuk menjalankan kode kita di komputer dengan perintah
+
+   ```bash
+   vercel dev
+   ```
+
+   Mari kita lihat apa hasilnya....
+
+   Masih juga error... 😭
+
+   Dan output errornya adalah:
+
+   ```
+   Vercel CLI xx.xx.xx
+   Error: Your `package.json` file is missing a `build` property inside the `scripts` property.
+   Learn More: https://vercel.link/missing-build-script
+   ```
+
+   Maka sampai di titik ini kita akan coba untuk memperbaiki kode yang kita miliki supaya bisa berjalan dengan baik !
+
+### Langkah 4 - Memperbaiki Kode
+
+###### ----------------------------------
+
+Pada langkah ini kita akan melakukan konfigurasi kode yang dimiliki sehingga bisa dijalankan pada `Vercel`.
+
+Sebenarnya kita bisa saja mengikuti dokumentasi yang ada:
+
+- Memindahkan folder untuk `functions` ke `/api`
+- Membuat FrontEnd nya
+- Jalankan kodenya.
+
+Namun, pada aplikasi yang kita buat ini, bukan dalam bentuk FrontEnd first, melainkan BackEnd only.
+
+Oleh karena itu, konfigurasi yang akan dilakukan pada pembelajaran ini, tidak terlalu mengikuti dokumentasi yang ada pada `Vercel`, melainkan berdasarkan baca dan mencoba dari API Reference yang ada pada `Vercel`.
+
+Jadi, apabila berbeda dari dokumentasi yang ada, harap dimaklumi yah.
+
+Langkah-langkahnya adalah sebagai berikut:
+
+1. Membuat sebuah file baru untuk konfigurasi vercel dengan nama `vercel.json`
+1. Memodifikasi file `vercel.json` menjadi sebagai berikut:
+
+   ```json
+   {
+     "routes": [
+       {
+         "src": "/(.*)",
+         "dest": "/api"
+       }
+     ]
+   }
+   ```
+
+   Masih belum mengerti yah apa maksud dari json di atas? mari kita coba untuk bedah kodenya
+
+###### ----------------------------------
