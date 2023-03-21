@@ -1,0 +1,6 @@
+[submodule "sources/sources/b-end"]
+	path = sources/sources/b-end
+	url = https://github.com/withered-flowers/apps-deploy-serverless
+[submodule "sources/b-end"]
+	path = sources/b-end
+	url = https://github.com/withered-flowers/apps-deploy-serverless
