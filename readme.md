@@ -28,6 +28,11 @@ Pada pembelajaran ini sudah disediakan sebuah kode sederhana yang sudah disiapka
 
 Apabila belum membuat akun `Vercel`, sangat disarankan untuk `Login with Github` dalam pembelajaran ini agar cepat terkoneksi dengan `Vercel`.
 
+Demo aplikasi akhir-nya bisa dilihat di:
+
+- https://apps-deploy-serverless.vercel.app
+- https://apps-deploy-serverless.vercel.app/api
+
 ## Perkenalan
 
 Pada pembelajaran sebelumnya (https://github.com/withered-flowers/education-deploy-apps-aws) kita sudah belajar bagaimana cara mendeploy aplikasi Backend yang kita miliki dengan menggunakan AWS dan bagaimana cara untuk mengkonfigurasi domain yang ada.
